@@ -52,7 +52,7 @@ public class TicTacToeImpl extends UnicastRemoteObject implements TicTacToeContr
         
         if(totalPlayers % 2 == 1) {
             List<String> temp = new ArrayList<>();
-            temp.add("123456789101112131415161718192021222324252627282930313233343536373839404142434445464748");
+            temp.add("-------------------------------------------------");
             temp.add(Integer.toString(playerIDcnt));
             gameToBoard.put(gameIDcnt,temp);
             
@@ -127,43 +127,97 @@ public class TicTacToeImpl extends UnicastRemoteObject implements TicTacToeContr
         int x = (cell_number - 1)/7, y = (cell_number - 1) % 7;
 
         //check corresponding row
-        if(boardArray[x][0] == symbol && boardArray[x][1] == symbol && boardArray[x][2] == symbol){
-            gameToBoard.get(gameID).set(0,"win");
-            return "win";
-        } 
+        int auxRow = 1;
+	    for (i = 0; i < 7; i++) {
+            for(j = 0; j < 7; j++) {
+                if(j == 6) continue;
+
+                if (boardArray[i][j] == boardArray[i][j+1] && boardArray[i][j] == symbol) {
+                    auxRow++;
+                    if(auxRow == 4){
+                        gameToBoard.get(gameID).set(0,"win");
+                        return "win";
+                    }
+                }else{
+                    auxRow = 1;
+                }
+            }
+        }
 
         //check corresponding column
-        if(boardArray[0][y] == symbol && boardArray[1][y] == symbol && boardArray[2][y] == symbol) {
-            gameToBoard.get(gameID).set(0,"win");
-            return "win";
+        int auxCol = 1;
+        for (j = 0; j < 7; j++) {
+            for (i = 0; i < 7; i++) {
+                if(i == 6) continue;
+
+                if (boardArray[i][j] == boardArray[i+1][j] && boardArray[i][j] == symbol) {
+                    auxCol++;
+                    if(auxCol == 4){
+                        gameToBoard.get(gameID).set(0,"win");
+                        return "win";
+                    }
+                }else{
+                    auxCol = 1;
+                }
+            }
         }
 
         //check left diagonal
-        if(boardArray[0][0] == symbol && boardArray[1][1] == symbol && boardArray[2][2] == symbol) {
+        if(boardArray[3][0] == symbol && boardArray[2][1] == symbol && boardArray[1][2] == symbol && boardArray[0][3] == symbol || 
+            boardArray[4][0] == symbol && boardArray[3][1] == symbol && boardArray[2][2] == symbol && boardArray[1][3] == symbol || 
+            boardArray[3][1] == symbol && boardArray[2][2] == symbol && boardArray[1][3] == symbol && boardArray[0][4] == symbol || 
+            boardArray[5][0] == symbol && boardArray[4][1] == symbol && boardArray[3][2] == symbol && boardArray[2][3] == symbol ||
+            boardArray[4][1] == symbol && boardArray[3][2] == symbol && boardArray[2][3] == symbol && boardArray[1][4] == symbol ||
+            boardArray[3][2] == symbol && boardArray[2][3] == symbol && boardArray[1][4] == symbol && boardArray[0][5] == symbol ||
+            boardArray[6][0] == symbol && boardArray[5][1] == symbol && boardArray[4][2] == symbol && boardArray[3][3] == symbol ||
+            boardArray[5][1] == symbol && boardArray[4][2] == symbol && boardArray[3][3] == symbol && boardArray[2][4] == symbol ||
+            boardArray[4][2] == symbol && boardArray[3][3] == symbol && boardArray[2][4] == symbol && boardArray[1][5] == symbol ||
+            boardArray[3][3] == symbol && boardArray[2][4] == symbol && boardArray[1][5] == symbol && boardArray[0][6] == symbol ||
+            boardArray[6][1] == symbol && boardArray[5][2] == symbol && boardArray[4][3] == symbol && boardArray[3][4] == symbol ||
+            boardArray[5][2] == symbol && boardArray[4][3] == symbol && boardArray[3][4] == symbol && boardArray[2][5] == symbol ||
+            boardArray[4][3] == symbol && boardArray[3][4] == symbol && boardArray[2][5] == symbol && boardArray[1][6] == symbol ||
+            boardArray[6][2] == symbol && boardArray[5][3] == symbol && boardArray[4][4] == symbol && boardArray[3][5] == symbol ||
+            boardArray[5][3] == symbol && boardArray[4][4] == symbol && boardArray[3][5] == symbol && boardArray[2][6] == symbol ||
+            boardArray[6][3] == symbol && boardArray[5][4] == symbol && boardArray[4][5] == symbol && boardArray[3][6] == symbol) {
             gameToBoard.get(gameID).set(0,"win");
             return "win";
         }    
+     
 
         //check right diagonal
-        if(boardArray[0][2] == symbol && boardArray[1][1] == symbol && boardArray[2][0] == symbol) {
+        if(boardArray[3][0] == symbol && boardArray[4][1] == symbol && boardArray[5][2] == symbol && boardArray[6][3] == symbol || 
+            boardArray[2][0] == symbol && boardArray[3][1] == symbol && boardArray[4][2] == symbol && boardArray[5][3] == symbol || 
+            boardArray[3][1] == symbol && boardArray[4][2] == symbol && boardArray[5][3] == symbol && boardArray[6][4] == symbol || 
+            boardArray[1][0] == symbol && boardArray[2][1] == symbol && boardArray[3][2] == symbol && boardArray[4][3] == symbol ||
+            boardArray[2][1] == symbol && boardArray[3][2] == symbol && boardArray[4][3] == symbol && boardArray[5][4] == symbol ||
+            boardArray[3][2] == symbol && boardArray[4][3] == symbol && boardArray[5][4] == symbol && boardArray[6][5] == symbol ||
+            boardArray[0][0] == symbol && boardArray[1][1] == symbol && boardArray[2][2] == symbol && boardArray[3][3] == symbol ||
+            boardArray[1][1] == symbol && boardArray[2][2] == symbol && boardArray[3][3] == symbol && boardArray[4][4] == symbol ||
+            boardArray[2][2] == symbol && boardArray[3][3] == symbol && boardArray[4][4] == symbol && boardArray[5][5] == symbol ||
+            boardArray[3][3] == symbol && boardArray[4][4] == symbol && boardArray[5][5] == symbol && boardArray[6][6] == symbol ||
+            boardArray[0][1] == symbol && boardArray[1][2] == symbol && boardArray[2][3] == symbol && boardArray[3][4] == symbol ||
+            boardArray[1][2] == symbol && boardArray[2][3] == symbol && boardArray[3][4] == symbol && boardArray[4][5] == symbol ||
+            boardArray[2][3] == symbol && boardArray[3][4] == symbol && boardArray[4][5] == symbol && boardArray[5][6] == symbol ||
+            boardArray[0][2] == symbol && boardArray[1][3] == symbol && boardArray[2][4] == symbol && boardArray[3][5] == symbol ||
+            boardArray[1][3] == symbol && boardArray[2][4] == symbol && boardArray[3][5] == symbol && boardArray[4][6] == symbol ||
+            boardArray[0][3] == symbol && boardArray[1][4] == symbol && boardArray[2][5] == symbol && boardArray[3][6] == symbol){
             gameToBoard.get(gameID).set(0,"win");
             return "win";
         }
-            
-        boolean flag = true;
-        for(i = 0;i<48;i++) {
-            if(board.charAt(i) >= '1' && board.charAt(i) <= '9') {
-                flag = false;
-                break;
+          
+        int emptyAmount = 0;
+        for (i = 0; i < 7; i++) {
+            for(j = 0; j < 7; j++) {
+                if(boardArray[i][j] != 'O' && boardArray[i][j] != 'X') emptyAmount++;
             }
         }
-        if(flag) {
+
+        if(emptyAmount == 0) {
             gameToBoard.get(gameID).set(0,"draw");
             return "draw";
         }
         return "NoResult";      
-    }  
-
+    } 
     //store players' response after every finished game
     public void playersResponse(Integer gameID,Integer ans){        
         List<Integer> res = gameToResponse.get(gameID);
@@ -182,9 +236,9 @@ public class TicTacToeImpl extends UnicastRemoteObject implements TicTacToeContr
             return 0;
         if(gameToResponse.get(gameID).get(0).equals(1) && gameToResponse.get(gameID).get(1).equals(1)){
             String board = gameToBoard.get(gameID).get(0);
-            if(board.equals("123456789101112131415161718192021222324252627282930313233343536373839404142434445464748"))
+            if(board.equals("12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849"))
                 return 1;
-            board = "123456789101112131415161718192021222324252627282930313233343536373839404142434445464748";
+            board = "12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849";
             gameToBoard.get(gameID).set(0,board);
             gameToBoard.get(gameID).set(1,Integer.toString(playerID));
             return 1;

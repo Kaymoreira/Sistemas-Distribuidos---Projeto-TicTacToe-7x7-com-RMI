@@ -7,27 +7,38 @@ public class MyClient{
     
     //print board in a grid form
     public static void printBoard(String board){
-        System.out.println(board.charAt(0) + " | " + board.charAt(1) + " | " + board.charAt(2) + " | " + board.charAt(3) + " | " + board.charAt(4) + " | " + board.charAt(5) + " | " + board.charAt(6));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(7) + " | " + board.charAt(8) + " | " + board.charAt(9) + " | " + board.charAt(10) + " | " + board.charAt(11) + " | " + board.charAt(12) + " | " + board.charAt(13));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(14) + " | " + board.charAt(15) + " | " + board.charAt(16) + " | " + board.charAt(17) + " | " + board.charAt(18) + " | " + board.charAt(19) + " | " + board.charAt(20));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(21) + " | " + board.charAt(22) + " | " + board.charAt(23) + " | " + board.charAt(24) + " | " + board.charAt(25) + " | " + board.charAt(26) + " | " + board.charAt(27));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(28) + " | " + board.charAt(29) + " | " + board.charAt(30) + " | " + board.charAt(31) + " | " + board.charAt(32) + " | " + board.charAt(33) + " | " + board.charAt(34));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(35) + " | " + board.charAt(36) + " | " + board.charAt(37) + " | " + board.charAt(38) + " | " + board.charAt(39) + " | " + board.charAt(40) + " | " + board.charAt(41));
-        System.out.println("___________________________");
-        System.out.println(board.charAt(42) + " | " + board.charAt(43) + " | " + board.charAt(44) + " | " + board.charAt(45) + " | " + board.charAt(46) + " | " + board.charAt(47) + " | " + board.charAt(48));
-        System.out.println();
+        char[] boardArray = board.toCharArray();
+        int count = 0;
+        for (int i = 0; i < 49; i++) {
+            String a = (i + 1) + "";
+            if(i < 9) a = ("0" + (i + 1)) + "";
+            if(boardArray[i] == 'X' || boardArray[i] == 'O') a =  " " + boardArray[i];
+
+            System.out.print(a + " | ");
+            if(count >= 6) {
+                System.out.print("\n________________________________\n");
+                count = -1;
+            }
+            count++;
+        }
+        System.out.print('\n');
     }
-    
     public static void main(String args[]){
         try{
-            TicTacToeContract stub = (TicTacToeContract)Naming.lookup("rmi://localhost:1099/deadpool");
+
             Scanner in = new Scanner(System.in);
-            
+
+            String rmiAddress;
+            System.out.println("Insert the server IP? (localhost) ");
+            String address = in.nextLine();
+            if (!address.isEmpty()) {
+                rmiAddress = "rmi://" + address + ":1099/deadpool";
+            } else {
+                rmiAddress = "rmi://localhost:1099/deadpool";
+            }
+
+            TicTacToeContract stub = (TicTacToeContract)Naming.lookup(rmiAddress);
+
             System.out.println("Do you want to start the game ? (y/n) ");
             String reply = in.nextLine();
             if(!reply.equals("y"))
@@ -60,11 +71,20 @@ public class MyClient{
                     
                     //check for user imput before 10 seconds
                     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                    long startTime = System.currentTimeMillis();
-                    while ((System.currentTimeMillis() - startTime) < 10000  && !br.ready()){
-                    }
+                    while (!br.ready()){}
                     if (br.ready()) {
-                        cell_number = Integer.parseInt(br.readLine());
+                        boolean isCellEmpty = false;
+                        char[] boardArray = stub.retrieveBoard(gameID).toCharArray();
+                        while(!isCellEmpty){
+                            cell_number = Integer.parseInt(br.readLine());
+                            if(cell_number-1 < 0 || cell_number-1 > 48 ){
+                                System.out.println("Cell does not exist, try again...");
+                            }else if(boardArray[cell_number-1] != '-') {
+                                System.out.println("Cell is not empty, try again...");
+                            }else{
+                                isCellEmpty = true;
+                            }
+                        }
                         
                         String res = "";
                         board = stub.registerMove(gameID,cell_number,playerID);
@@ -182,7 +202,7 @@ public class MyClient{
                     }
                 }   
             }
-        }catch(Exception e){System.out.println(e);}
+        }catch(Exception e){System.out.println("ERROR");}
     }
     
 }
